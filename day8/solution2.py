@@ -1,10 +1,11 @@
 import numpy as np
 
 
-def scenic_score(li):
-    if not len(li):
-        return -1
-    return max(li)
+def scenic_score(li, x):
+    if not np.any(li >= x):
+        return len(li)
+    # print(np.where(li>=x)[])
+    return np.where(li >= x)[0][0]+1
 
 
 with open('input.txt') as f:
@@ -12,12 +13,15 @@ with open('input.txt') as f:
 
 data = np.array(data)
 (x, y) = data.shape
-total = 2*(x+y-2)
+max = 0
 for i in range(1, x-1):
     for j in range(1, y-1):
-        large = min(max_or_zero(data[i, :j]), max_or_zero(data[i, j+1:]),
-                    max_or_zero(data[:i, j]), max_or_zero(data[i+1:, j]))
-        if (large < data[i, j]):
-            total += 1
+        cur = data[i, j]
+        large = scenic_score(data[i, :j][::-1], cur) * \
+            scenic_score(data[i, j+1:], cur) *\
+            scenic_score(data[:i, j][::-1], cur) * \
+            scenic_score(data[i+1:, j], cur)
+        if (large > max):
+            max = large
 
-print(total)
+print(max)
