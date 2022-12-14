@@ -1,28 +1,38 @@
 h = (0, 0)
 t = (0, 0)
-hash_list_1d = []
+hash_list_1d = set()
+
+
+def get_new_dir(h, t, dir):
+    if (dir == "U" or dir == "D"):
+        return "R" if h[0] > t[0] else "L"
+    return "U" if h[1] > t[1] else "D"
 
 
 def move_head_and_tail(dir, mag):
     global h, t
-    h = move(h, dir, mag)
-    while (should_move(t, h)):
-        t = move(t, dir, 1)
-        hash_list_1d.append(t)
+    for i in range(mag):
+        h = move(h, dir)
+        if (should_move(t, h)):
+            t = move(t, dir)
+            mj = t
+            if h[0] != t[0] and h[1] != t[1]:
+                t = move(t, get_new_dir(h, t, dir))
+            hash_list_1d.add(t)
 
 
-def move(t, dir, mag):
+def move(k, dir):
     if (dir == "U"):
-        return t[0], t[1]+mag
+        return k[0], k[1]+1
     if (dir == "D"):
-        return t[0], t[1]-mag
+        return k[0], k[1]-1
     if (dir == "R"):
-        return t[0]+mag, t[1]
-    return t[0]-mag, t[1]
+        return k[0]+1, k[1]
+    return k[0]-1, k[1]
 
 
 def should_move(t, h):
-    return not (h[0] == t[0] or h[1] == t[1])
+    return not (abs(h[0] - t[0]) <= 1 and abs(h[1] - t[1]) <= 1)
 
 
 with open('input.txt') as f:
@@ -30,19 +40,8 @@ with open('input.txt') as f:
 
 
 for i in data:
-    if not i:
-        break
     dir = i[0]
-    mag = int(i[-1])
+    mag = int(i.split()[-1])
     move_head_and_tail(dir, mag)
 
-max_width = max(hash_list_1d, key=lambda x: x[1])[1]+1
-max_height = max(hash_list_1d, key=lambda x: x[0])[0]+1
-res_array = [list("."*max_width) for i in range(max_height)]
-
-for x, y in hash_list_1d:
-    res_array[x][y] = "#"
-res_array[0][0] = "S"
-
-for li in res_array[::-1]:
-    print("".join(li))
+print(len(hash_list_1d))
