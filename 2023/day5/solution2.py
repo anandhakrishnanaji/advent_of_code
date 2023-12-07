@@ -31,20 +31,12 @@ for index, value in enumerate(MAP_TITLES):
 
 final_seeds = []
 
-memory = [{} for i in MAP_TITLES]
-
 for i in range(0, len(seeds), 2):
-    [start, range_val] = seeds[i : i + 2]
-    mid_list = map(x[1] for x in map_list[0])
-    valid_start = 
+    [k, range_val] = seeds[i : i + 2]
     for seed in range(k, k + range_val):
-        for index, sub_list in enumerate(map_list):
-            if memory[index].get(seed):
-                seed = memory[index][seed]
-                continue
+        for sub_list in map_list:
             for dest, source, range_lim in sub_list:
                 if seed in range(source, source + range_lim):
-                    memory[index][seed] = dest + (seed - source)
                     seed = dest + (seed - source)
                     break
         print(seed)
