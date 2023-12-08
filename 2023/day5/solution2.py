@@ -1,4 +1,5 @@
-import re
+import math
+import numpy as np
 
 MAP_TITLES = [
     "seed-to-soil map:",
@@ -29,17 +30,22 @@ for index, value in enumerate(MAP_TITLES):
 
     map_list.append(temp_list)
 
-final_seeds = []
+min_seed = math.inf
 
 for i in range(0, len(seeds), 2):
-    [k, range_val] = seeds[i : i + 2]
-    for seed in range(k, k + range_val):
-        for sub_list in map_list:
-            for dest, source, range_lim in sub_list:
-                if seed in range(source, source + range_lim):
-                    seed = dest + (seed - source)
-                    break
-        print(seed)
-        final_seeds.append(seed)
+    k = seeds[i]
+    range_val = seeds[i + 1]
+    qseeds = np.arange(k, k + range_val)
+    qseeds_clone = qseeds.copy()
+    tqseeds = qseeds_clone.copy()
+    for sub_list in map_list:
+        tqseeds = qseeds_clone.copy()
+        for dest, source, range_lim in sub_list:
+            x = tqseeds - source
+            diff = dest - source
+            filter_array = np.logical_and(x >= 0, x < range_lim)
+            qseeds_clone[filter_array] += diff
+    min_seed = min(min_seed, min(qseeds_clone))
+    print(min_seed, min(qseeds_clone))
 
-print(min(final_seeds))
+print(min_seed)
