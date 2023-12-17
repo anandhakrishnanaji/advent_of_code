@@ -1,6 +1,6 @@
 import re
-import os
-from multiprocessing import Pool, Manager
+from math import lcm
+from multiprocessing import Pool
 
 REGEX_PATTERN = r"^(\w{3}) = \((\w{3}), (\w{3})\)$"
 
@@ -29,9 +29,6 @@ if __name__ == "__main__":
     current = list(filter(lambda x: x.endswith("A"), hash.keys()))
     count = []
 
-    manager = Manager()
-    shared_status = manager.list("current", current)
-    shared_count = manager.Value("count", 0)
-
     with Pool(10) as p:
-        print(p.starmap(get_count, [(i, direction, hash) for i in current]))
+        numbers = p.starmap(get_count, [(i, direction, hash) for i in current])
+        print(lcm(*numbers))
