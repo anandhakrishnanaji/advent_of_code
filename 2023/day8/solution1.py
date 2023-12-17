@@ -1,5 +1,4 @@
 import re
-import pdb
 
 REGEX_PATTERN = r"^(\w{3}) = \((\w{3}), (\w{3})\)$"
 
