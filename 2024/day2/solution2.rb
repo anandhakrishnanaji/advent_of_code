@@ -1,8 +1,7 @@
 def check_report(list, is_warned = false)
     prev = list.first
-    comparison_method = comp_method(list)
+    comparison_method = prev < list.last ? "<" : ">"
     list[1..].each_with_index do |elem, ind|
-        is_correct =
         if prev.send(comparison_method, elem) && ((prev - elem).abs in (1..3))
             prev = elem
         else
@@ -14,21 +13,6 @@ def check_report(list, is_warned = false)
 
     true
 end
-
-def comp_method(list)
-    h = Hash.new(0)
-
-    list[1..].each_with_index do |v, i|
-        if v < list[i]
-            h[">"] += 1
-        elsif v > list[i]
-            h["<"] += 1
-        end
-    end
-
-    h[">"] > h["<"] ? ">" : "<"
-end
-
 
 reports = File.read("input.txt").split("\n").map(&:split)
 
